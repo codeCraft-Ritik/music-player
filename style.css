@@ -258,3 +258,14 @@ input::-webkit-slider-thumb {
   align-items: center;
   justify-content: center;
 }
+
+.mode-toggle {
+  font-size: 1.2rem !important; /* Smaller than play button */
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.mode-toggle.active-mode {
+  opacity: 1;
+  color: var(--main-color);
+}

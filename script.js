@@ -1,6 +1,6 @@
 //* state
 
-const state = { activeTrack: 0, initPlay: false };
+const state = { activeTrack: 0, initPlay: false, mode: "Normal" };
 
 //* selectors
 
@@ -10,6 +10,7 @@ const ui = {
   // sliders
   seekBar: document.querySelector(".seek-slider input"),
   volumeBar: document.querySelector(".volume-slider input"),
+  modeBtn: document.querySelector(".mode-toggle"),
 
   // buttons
   showPlayListBtn: document.querySelector(".show"),
@@ -34,6 +35,7 @@ const setupEventListeners = () => {
   document.addEventListener("DOMContentLoaded", loadTrack);
 
   // player events
+  ui.modeBtn.addEventListener("click", toggleMode);
   ui.playPauseBtn.addEventListener("click", playPauseTrack);
   ui.seekBar.addEventListener("input", updateSeek);
   ui.volumeBar.addEventListener("input", updateVolume);
@@ -89,8 +91,36 @@ const prevTrack = () => {
   loadTrack();
 };
 
+// Contribution
+const toggleMode = () => {
+  const modes = ['normal', 'repeat', 'shuffle'];
+  const currentIndex = modes.indexOf(state.mode);
+  state.mode = modes[(currentIndex + 1) % modes.length];
+  
+  // Update UI icon based on mode
+  const modeIcon = ui.modeBtn.querySelector('i');
+  ui.modeBtn.classList.remove('active-mode');
+  
+  if (state.mode === 'normal') {
+    modeIcon.className = 'bi bi-arrow-right';
+  } else if (state.mode === 'repeat') {
+    modeIcon.className = 'bi bi-repeat';
+    ui.modeBtn.classList.add('active-mode');
+  } else if (state.mode === 'shuffle') {
+    modeIcon.className = 'bi bi-shuffle';
+    ui.modeBtn.classList.add('active-mode');
+  }
+};
+
 const nextTrack = () => {
-  state.activeTrack = (state.activeTrack + 1) % tracks.length;
+  // Contribution
+  if (state.mode === 'shuffle') {
+    state.activeTrack = Math.floor(Math.random() * tracks.length);
+  } else if (state.mode === 'repeat') {
+    // Keep activeTrack the same
+  } else {
+    state.activeTrack = (state.activeTrack + 1) % tracks.length;
+  }
   loadTrack();
 };
 
